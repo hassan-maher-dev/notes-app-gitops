@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes-app-deployment
+  namespace: notes-app-ns
+  labels:
+    app: notes-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notes-app
+  template:
+    metadata:
+      labels:
+        app: notes-app
+    spec:
+      containers:
+      - name: notes-app-container
+        # هذا هو السطر الذي سيقوم Jenkins بتحديثه تلقائياً برقم الـ Build
+        image: hassanmaher2001/devops-notes-app-ci:latest 
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: notes-app-config

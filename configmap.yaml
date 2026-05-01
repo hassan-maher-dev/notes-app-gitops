@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notes-app-config
+  namespace: notes-app-ns
+data:
+  FLASK_APP: "app.py"    # عدل اسم الملف إذا كان مختلفاً في الكود الخاص بك
+  FLASK_ENV: "development" # أو "production"
