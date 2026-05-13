@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: notes-app-service
-  namespace: notes-app-ns
+  namespace: notes-app-ns # تأكد إنه نفس الـ Namespace
 spec:
-  type: LoadBalancer
+  type: ClusterIP # التعديل هنا (وفرنا فلوس الـ LoadBalancer)
   selector:
     app: notes-app
   ports:
     - protocol: TCP
-      port: 80         # البورت الخارجي الذي سيدخل منه المستخدمون
-      targetPort: 5000 # البورت الداخلي لتطبيق Flask
+      port: 80         # البورت اللي الـ Ingress هيكلم السيرفس عليه
+      targetPort: 5000 # بورت Flask الداخلي
