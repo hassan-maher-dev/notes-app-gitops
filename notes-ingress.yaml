@@ -20,7 +20,7 @@ spec:
               number: 80
 
   # القاعدة التانية: دي مخصصة ليك أنت لما تستخدم الدومين الوهمي
-  - host: notes.hassan.local
+  - host: notes.aws-internal.com
     http:
       paths:
       - path: /
