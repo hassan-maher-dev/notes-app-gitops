@@ -1,32 +1,43 @@
-# 🚀 Note-Taking App: GitOps CD Pipeline
+#  Note-Taking App: Complete GitOps & Observability Stack
 
-This repository contains the Kubernetes manifests for the Continuous Deployment (CD) phase of the Note-Taking Application, applying GitOps principles using **ArgoCD** and **AWS EKS**.
+This repository contains the declarative Kubernetes manifests for the Continuous Deployment (CD) and Infrastructure management of the Note-Taking Application. It utilizes **ArgoCD** to implement a robust GitOps pipeline on **AWS EKS**, fully integrated with an advanced observability and routing stack.
 
-## 📌 Project Overview
-This project represents the CD portion of a complete CI/CD lifecycle. While Jenkins handles the Continuous Integration (CI) by building and pushing the Docker image to DockerHub, **ArgoCD** acts as the GitOps controller inside the Amazon EKS cluster. It continuously monitors this repository and automatically synchronizes the cluster state with the configurations defined here.
+##  Project Overview
+This project represents the CD and Operations portion of a complete CI/CD lifecycle. While Jenkins handles the Continuous Integration (CI) by building and pushing the Docker image, **ArgoCD** acts as the GitOps controller inside the Amazon EKS cluster. It continuously monitors this repository and automatically synchronizes the cluster state with the configurations defined here, achieving a "Single Source of Truth."
 
-## 🏗️ Architecture (GitOps Flow)
-1. **CI Pipeline (Jenkins):** Builds the Flask monolithic application image and pushes it to DockerHub (`hassanmaher2001/devops-notes-app-ci`).
-2. **Manifest Update:** Jenkins updates the `deployment.yaml` in this Git repository with the newly generated image tag.
-3. **CD Pipeline (ArgoCD):** Detects changes in this repository and automatically deploys the updated resources to the EKS cluster, pulling the new image.
+## 🏗️ Architecture & GitOps Flow
+1. **CI Pipeline:** Jenkins builds the Python Flask monolithic application image and pushes it to DockerHub (`hassanmaher2001/devops-notes-app-ci`).
+2. **Manifest Update:** Jenkins automatically updates the `deployment.yaml` in this repository with the newly generated image tag.
+3. **CD Pipeline (ArgoCD):** Detects changes and applies them to the EKS cluster.
+4. **Traffic Management:** NGINX Ingress Controller acts as the single entry point, routing external traffic efficiently and reducing cloud costs by replacing multiple AWS LoadBalancers with internal `ClusterIP` services.
+5. **Observability:** A complete Prometheus and Grafana stack is continuously managed via ArgoCD Helm charts to monitor cluster health and application metrics.
 
-## 📁 Repository Structure (`/k8s`)
-* `namespace.yaml`: Creates the `notes-app-ns` isolated namespace for the project.
-* `configmap.yaml`: Injects necessary environment variables (`FLASK_APP`, `FLASK_ENV`) into the application environment.
-* `deployment.yaml`: Manages the application Pods (Configured initially for 2 Replicas to ensure High Availability) and exposes container port `5000`.
-* `service.yaml`: Provisions an AWS `LoadBalancer` to expose the application to the internet, mapping external port `80` to internal port `5000`.
+##  Repository Structure
+* **Application Core:**
+  * `namespace.yaml`: Creates an isolated environment (`notes-app-ns`).
+  * `configmap.yaml`: Injects application environment variables.
+  * `deployment.yaml`: Manages High Availability with application Pod replicas.
+  * `service.yaml`: Configured as `ClusterIP` to secure the app internally.
+* **Routing & Ingress:**
+  * `notes-ingress.yaml`: Routes public traffic via AWS LoadBalancer to the Notes app using a Catch-All rule.
+  * `grafana-ingress.yaml` & `argocd-ingress.yaml`: Secures administrative tools via internal `.local` hostnames.
+* **Infrastructure as Code (ArgoCD Apps):**
+  * `nginx-ingress-app.yaml`: Bootstraps the NGINX Ingress Controller via Helm.
+  * `prometheus-app.yaml`: Bootstraps the Kube-Prometheus-Stack for monitoring.
 
-## 🛠️ Technologies Used
+##  Technologies Used
 * **Cloud Infrastructure:** AWS EKS (Elastic Kubernetes Service)
-* **Continuous Deployment (GitOps):** ArgoCD
+* **GitOps & CD:** ArgoCD
 * **Containerization:** Docker
+* **Traffic Routing:** NGINX Ingress Controller
+* **Observability:** Prometheus & Grafana
 * **Application Stack:** Python (Flask), HTML/CSS, SQLite
 
-## 🚀 Future Enhancements (Phase 2)
+##  Future Enhancements (Phase 2)
 * **Microservices Architecture:** Refactor the monolithic application by decoupling the Frontend and Backend to enhance scalability.
 * **Stateful Storage:** Implement Persistent Volumes (PV) and Persistent Volume Claims (PVC) to retain SQLite database records across Pod restarts.
-* **Advanced Networking:** Implement Ingress Controllers for optimized traffic routing and Service Discovery within the cluster.
+* **Public DNS Integration:** Map the Ingress LoadBalancer to a public registered domain name with valid TLS/SSL certificates.
 
 ---
-**👨‍💻 Author:** Hassan Maher  
-*Developed as part of the Digital Egypt Pioneers Initiative  DEPI - DevOps Track, under the supervision of Instructor Mohamed Atta.*
+**👨 Author:** Hassan Maher  
+*Developed as part of the Digital Egypt Pioneers Initiative - DEPI - DevOps & Cloud Computing Track, under the supervision of Eng. Mohamed Atta.*
